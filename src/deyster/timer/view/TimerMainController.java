@@ -1,8 +1,11 @@
 package deyster.timer.view;
 
+import java.util.Date;
+
 import deyster.timer.MainApp;
 import deyster.timer.model.Task;
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 
@@ -14,7 +17,11 @@ public class TimerMainController
 	private TableColumn<Task, String> taskNameColumn;
 	@FXML
 	private TableColumn<Task, String> taskTimeColumn;
+	@FXML
+	private Label workingTask;
 	private MainApp mainApp;
+	private int startTime, stopTime;
+	private Task currentTask;
 	
 	public TimerMainController() {}
 	
@@ -27,7 +34,10 @@ public class TimerMainController
 		taskTimeColumn.setCellValueFactory(
 				cellData -> cellData.getValue().getTaskTimeProperty());
 		
-		//TODO: Set listener to select task via table
+		/* Probably don't need this
+		 * TODO: Set listener to select task via table
+		taskTable.getSelectionModel().selectedItemProperty().addListener(
+				(observable, oldValue, newValue) -> handleSelection(newValue));*/
 	}
 	
 	/*
@@ -41,4 +51,25 @@ public class TimerMainController
 	}
 	
 	//TODO: Handle Buttons
+	public void handleStart()
+	{
+		System.out.println("Start");
+		currentTask = taskTable.getSelectionModel().getSelectedItem();
+		//System.out.println(currentTask.getTaskName());
+		workingTask.setText(currentTask.getTaskName());
+		startTime = (int) getNewDate().getTime();
+	}
+	
+	public void handleStop()
+	{
+		System.out.println("Stop");
+		workingTask.setText("Nothing");
+		stopTime = (int) getNewDate().getTime();
+		currentTask.addTime(stopTime - startTime);
+	}
+	
+	private Date getNewDate()
+	{
+		return new Date();
+	}
 }

@@ -60,5 +60,10 @@ public class Task
 		return ((time % 3600000) / 60000);
 	}
 	
+	public String getTaskName()
+	{
+		return taskName;
+	}
+	
 	
 }
