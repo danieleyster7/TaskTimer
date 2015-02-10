@@ -32,12 +32,7 @@ public class TimerMainController
 		taskNameColumn.setCellValueFactory(
 				cellData -> cellData.getValue().getTaskNameProperty());
 		taskTimeColumn.setCellValueFactory(
-				cellData -> cellData.getValue().getTaskTimeProperty());
-		
-		/* Probably don't need this
-		 * TODO: Set listener to select task via table
-		taskTable.getSelectionModel().selectedItemProperty().addListener(
-				(observable, oldValue, newValue) -> handleSelection(newValue));*/
+				cellData -> cellData.getValue().getTimeStringProperty());
 	}
 	
 	/*
@@ -55,7 +50,6 @@ public class TimerMainController
 	{
 		System.out.println("Start");
 		currentTask = taskTable.getSelectionModel().getSelectedItem();
-		//System.out.println(currentTask.getTaskName());
 		workingTask.setText(currentTask.getTaskName());
 		startTime = (int) getNewDate().getTime();
 	}
@@ -66,6 +60,7 @@ public class TimerMainController
 		workingTask.setText("Nothing");
 		stopTime = (int) getNewDate().getTime();
 		currentTask.addTime(stopTime - startTime);
+		System.out.println("" + currentTask.getTimeStringProperty());
 	}
 	
 	private Date getNewDate()

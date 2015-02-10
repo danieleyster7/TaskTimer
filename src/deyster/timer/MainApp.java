@@ -26,8 +26,8 @@ public class MainApp extends Application
 		//Dummy values for testing purposes
 		taskData.add(new Task("Task 1"));
 		taskData.add(new Task("Task 2"));
-		taskData.add(new Task("Task 3"));
-		taskData.add(new Task("Task 4"));
+		//taskData.add(new Task("Task 3"));
+		//taskData.add(new Task("Task 4"));
 	}
 	
 	
@@ -92,6 +92,11 @@ public class MainApp extends Application
 		catch (IOException e) {
             e.printStackTrace();
         }
+	}
+	
+	public void generateTask()
+	{
+		taskData.add(new Task("Task 1"));
 	}
 	
 	public ObservableList<Task> getTaskData()
