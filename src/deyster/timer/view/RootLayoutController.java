@@ -1,6 +1,7 @@
 package deyster.timer.view;
 
 import deyster.timer.*;
+import deyster.timer.model.Task;
 
 public class RootLayoutController 
 {
@@ -17,10 +18,29 @@ public class RootLayoutController
 	}
 	
 	//TODO: handleNewDate
+	public void handleNewDate()
+	{
+		
+	}
 	
 	//TODO: handleNewTask
-	
-	//TODO: handleNewClose
+	public void handleNewTask()
+	{
+		Task tempTask = new Task();
+		boolean okClicked = mainApp.showNewTaskDialog(tempTask);
+		if(okClicked)
+			mainApp.getTaskData().add(tempTask);
+	}
+	//TODO: handleClose
+	public void handleClose()
+	{
+		//TODO: Add save point to re-open on
+		System.exit(0);
+	}
 	
 	//TODO: handledelete
+	public void handleDelete()
+	{
+		
+	}
 }

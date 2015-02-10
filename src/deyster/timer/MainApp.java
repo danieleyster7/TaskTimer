@@ -2,8 +2,11 @@ package deyster.timer;
 
 import java.io.IOException;
 
+import ch.deyster.address.MainApp;
+import ch.deyster.address.view.PersonEditDialogController;
 import deyster.timer.view.RootLayoutController;
 import deyster.timer.view.TimerMainController;
+import deyster.timer.dialog.NewTaskController;
 import deyster.timer.model.Task;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
@@ -13,6 +16,7 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class MainApp extends Application 
@@ -21,15 +25,7 @@ public class MainApp extends Application
 	private BorderPane rootLayout;
 	private ObservableList<Task> taskData = FXCollections.observableArrayList();
 	
-	public MainApp() 
-	{
-		//Dummy values for testing purposes
-		taskData.add(new Task("Task 1"));
-		taskData.add(new Task("Task 2"));
-		//taskData.add(new Task("Task 3"));
-		//taskData.add(new Task("Task 4"));
-	}
-	
+	public MainApp() {}
 	
 	public void start(Stage primaryStage) 
 	{
@@ -94,9 +90,34 @@ public class MainApp extends Application
         }
 	}
 	
-	public void generateTask()
+	public boolean showNewTaskDialog(Task tempTask)
 	{
-		taskData.add(new Task("Task 1"));
+		try {
+            // Load the fxml file and create a new stage for the popup dialog.
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(MainApp.class.getResource("view/NewTask.fxml"));
+            AnchorPane page = (AnchorPane) loader.load();
+
+            // Create the dialog Stage.
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("New Task");
+            dialogStage.initModality(Modality.WINDOW_MODAL);
+            dialogStage.initOwner(primaryStage);
+            Scene scene = new Scene(page);
+            dialogStage.setScene(scene);
+
+            NewTaskController controller = loader.getController();
+            controller.setDialogStage(dialogStage);
+            controller.setTask(tempTask);
+
+            // Show the dialog and wait until the user closes it
+            dialogStage.showAndWait();
+
+            return controller.isOkClicked();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
 	}
 	
 	public ObservableList<Task> getTaskData()

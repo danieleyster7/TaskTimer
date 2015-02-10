@@ -11,6 +11,14 @@ public class Task
 	private int taskSeconds;
 	private StringProperty timeString;
 	
+	public Task()
+	{
+		taskName = "";
+		taskMinutes = 0;
+		taskHours = 0;
+		taskSeconds = 0;
+		timeString = new SimpleStringProperty("00:00:00");
+	}
 	
 	//Pass name of task to be logged
 	public Task(String name) 
@@ -19,7 +27,7 @@ public class Task
 		taskMinutes = 0;
 		taskHours = 0;
 		taskSeconds = 0;
-		timeString = new SimpleStringProperty("0:0:0");
+		timeString = new SimpleStringProperty("00:00:00");
 	}
 	
 	/*
@@ -44,8 +52,28 @@ public class Task
 			taskHours += (taskMinutes / 60);
 			taskMinutes = taskMinutes - (60 * (taskMinutes / 60));
 		}
-		String taskTime = "" + Integer.toString(taskHours) + ":" + Integer.toString(taskMinutes) + ":" + Integer.toString(taskSeconds);
-		timeString = new SimpleStringProperty(taskTime);
+		setTimeStringProperty();
+	}
+	
+	private void setTimeStringProperty()
+	{
+		String taskTime = "";
+		if(taskHours < 10)
+			taskTime += "0" + Integer.toString(taskHours);
+		else
+			taskTime += Integer.toString(taskHours);
+		
+		if(taskMinutes < 10)
+			taskTime += ":0" + Integer.toString(taskMinutes);
+		else
+			taskTime += ":" + Integer.toString(taskMinutes);
+		
+		if(taskSeconds < 10)
+			taskTime += ":0" + Integer.toString(taskSeconds);
+		else
+			taskTime += ":" + Integer.toString(taskSeconds);
+		
+		timeString.set(taskTime);
 	}
 	
 	//Returns taskName wrapped in a StringProperty for JFX display
@@ -80,6 +108,11 @@ public class Task
 	public String getTaskName()
 	{
 		return taskName;
+	}
+	
+	public void setTaskName(String name)
+	{
+		taskName = name;
 	}
 	
 	
