@@ -2,10 +2,9 @@ package deyster.timer;
 
 import java.io.IOException;
 
-import ch.deyster.address.MainApp;
-import ch.deyster.address.view.PersonEditDialogController;
 import deyster.timer.view.RootLayoutController;
 import deyster.timer.view.TimerMainController;
+import deyster.timer.dialog.DeleteTaskController;
 import deyster.timer.dialog.NewTaskController;
 import deyster.timer.model.Task;
 import javafx.application.Application;
@@ -25,7 +24,11 @@ public class MainApp extends Application
 	private BorderPane rootLayout;
 	private ObservableList<Task> taskData = FXCollections.observableArrayList();
 	
-	public MainApp() {}
+	public MainApp() {
+		taskData.add(new Task("Task 1"));
+		taskData.add(new Task("Task 2"));
+		taskData.add(new Task("Task 3"));
+	}
 	
 	public void start(Stage primaryStage) 
 	{
@@ -95,7 +98,7 @@ public class MainApp extends Application
 		try {
             // Load the fxml file and create a new stage for the popup dialog.
             FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(MainApp.class.getResource("view/NewTask.fxml"));
+            loader.setLocation(MainApp.class.getResource("dialog/NewTask.fxml"));
             AnchorPane page = (AnchorPane) loader.load();
 
             // Create the dialog Stage.
@@ -109,6 +112,37 @@ public class MainApp extends Application
             NewTaskController controller = loader.getController();
             controller.setDialogStage(dialogStage);
             controller.setTask(tempTask);
+
+            // Show the dialog and wait until the user closes it
+            dialogStage.showAndWait();
+
+            return controller.isOkClicked();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+	}
+	
+	// TODO: Pass list to be updated
+	public boolean showDeleteTaskDialog()
+	{
+		try {
+            // Load the fxml file and create a new stage for the popup dialog.
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(MainApp.class.getResource("dialog/DeleteTask.fxml"));
+            AnchorPane page = (AnchorPane) loader.load();
+
+            // Create the dialog Stage.
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("Delete Task");
+            dialogStage.initModality(Modality.WINDOW_MODAL);
+            dialogStage.initOwner(primaryStage);
+            Scene scene = new Scene(page);
+            dialogStage.setScene(scene);
+
+            DeleteTaskController controller = loader.getController();
+            controller.passTasks(taskData);
+            controller.setDialogStage(dialogStage);
 
             // Show the dialog and wait until the user closes it
             dialogStage.showAndWait();

@@ -1,8 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1">
-	<!-- TODO Add Nodes -->
+<AnchorPane prefHeight="100.0" prefWidth="300.0" styleClass="background" stylesheets="@../view/JMetroDarkTheme.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="deyster.timer.dialog.NewTaskController">
+   <children>
+      <HBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="50.0">
+         <children>
+            <Button alignment="CENTER" mnemonicParsing="false" onAction="#handleOK" prefWidth="120.0" text="OK">
+               <HBox.margin>
+                  <Insets left="20.0" top="10.0" />
+               </HBox.margin>
+            </Button>
+            <Button alignment="CENTER" mnemonicParsing="false" onAction="#handleCancel" prefWidth="120.0" text="Cancel" HBox.hgrow="NEVER">
+               <HBox.margin>
+                  <Insets left="20.0" top="10.0" />
+               </HBox.margin>
+            </Button>
+         </children>
+      </HBox>
+      <HBox AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <Label styleClass="item-title" text="Task Name:">
+               <HBox.margin>
+                  <Insets left="10.0" top="12.0" />
+               </HBox.margin>
+            </Label>
+            <TextField fx:id="taskNameField" prefHeight="25.0" prefWidth="186.0">
+               <HBox.margin>
+                  <Insets left="10.0" right="10.0" top="10.0" />
+               </HBox.margin>
+            </TextField>
+         </children>
+      </HBox>
+   </children>
 </AnchorPane>
-
