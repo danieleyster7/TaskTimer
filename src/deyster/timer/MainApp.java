@@ -1,12 +1,31 @@
 package deyster.timer;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.nio.charset.Charset;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.StatusLine;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpResponseException;
+import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.entity.ContentType;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import deyster.timer.view.RootLayoutController;
 import deyster.timer.view.TimerMainController;
 import deyster.timer.dialog.DeleteTaskController;
 import deyster.timer.dialog.NewTaskController;
 import deyster.timer.model.Task;
+import deyster.timer.model.Ticket;
+import deyster.timer.model.WHDTask;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -22,12 +41,10 @@ public class MainApp extends Application
 {
 	private Stage primaryStage;
 	private BorderPane rootLayout;
-	private ObservableList<Task> taskData = FXCollections.observableArrayList();
+	private ObservableList<WHDTask> taskData = FXCollections.observableArrayList();
 	
-	public MainApp() {
-		taskData.add(new Task("Task 1"));
-		taskData.add(new Task("Task 2"));
-		taskData.add(new Task("Task 3"));
+	public MainApp() throws IOException {	
+		getTickets();
 	}
 	
 	public void start(Stage primaryStage) 
@@ -154,7 +171,7 @@ public class MainApp extends Application
         }
 	}
 	
-	public ObservableList<Task> getTaskData()
+	public ObservableList<WHDTask> getTaskData()
 	{
 		return taskData;
 	}
@@ -167,5 +184,46 @@ public class MainApp extends Application
 	public static void main(String[] args) 
 	{
 		launch(args);
+	}
+	
+	public void getTickets() throws IOException
+	{
+		Gson gson = new Gson();
+		CloseableHttpClient httpclient = HttpClients.createDefault();
+		HttpGet httpget = new HttpGet("https://webhelpdesk.treca.org/helpdesk/WebObjects/Helpdesk.woa/ra/Tickets/mine?apiKey=xrJtiSwVzd8XUxKlKsvyz68YtWrnrX3sdp2hWPA0");
+		
+		ResponseHandler<Ticket[]> rh = new ResponseHandler<Ticket[]>()
+		{
+		    @Override
+		    public Ticket[] handleResponse(final HttpResponse response) throws IOException 
+		    {
+		        StatusLine statusLine = response.getStatusLine();
+		        HttpEntity entity = response.getEntity();
+		        
+		        if (statusLine.getStatusCode() >= 300) {
+		            throw new HttpResponseException(
+		                    statusLine.getStatusCode(),
+		                    statusLine.getReasonPhrase());
+		        }
+		        
+		        if (entity == null) {
+		            throw new ClientProtocolException("Response contains no content");
+		        }
+		        
+		        Gson gson = new GsonBuilder().create();
+		        ContentType contentType = ContentType.getOrDefault(entity);
+		        Charset charset = contentType.getCharset();
+		        Reader reader = new InputStreamReader(entity.getContent(), charset);
+		        return gson.fromJson(reader, Ticket[].class);
+		    }
+		};
+		
+		Ticket tickets[] = httpclient.execute(httpget, rh);
+		
+		for(int i = 0; i < tickets.length; i++)
+		{
+			System.out.println(gson.toJson(tickets[i]));
+			taskData.add(new WHDTask(tickets[i].getShortSubject(), tickets[i].getID()));
+		}
 	}
 }

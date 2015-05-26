@@ -6,14 +6,15 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="400.0" prefWidth="350.0" stylesheets="@DarkTheme.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="deyster.timer.view.TimerMainController">
+<AnchorPane prefHeight="400.0" prefWidth="400.0" stylesheets="@DarkTheme.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="deyster.timer.view.TimerMainController">
    <children>
       <AnchorPane layoutX="50.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
             <TableView fx:id="taskTable" layoutX="39.0" layoutY="32.0" prefHeight="300.0" prefWidth="300.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
               <columns>
+                  <TableColumn fx:id="taskIDColumn" minWidth="100.0" prefWidth="100.0" text="WHD #" />
                 <TableColumn fx:id="taskNameColumn" minWidth="175.0" prefWidth="175.0" text="Task" />
-                <TableColumn fx:id="taskTimeColumn" minWidth="175.0" prefWidth="175.0" text="Time" />
+                <TableColumn fx:id="taskTimeColumn" minWidth="125.0" prefWidth="125.0" text="Time" />
               </columns>
             </TableView>
          </children>
@@ -26,7 +27,7 @@
                   <Button layoutX="150.0" layoutY="13.0" minHeight="30.0" minWidth="125.0" mnemonicParsing="false" onAction="#handleStop" prefHeight="30.0" prefWidth="125.0" text="Stop" />
                </children>
                <padding>
-                  <Insets left="25.0" top="10.0" />
+                  <Insets left="50.0" top="10.0" />
                </padding>
             </HBox>
             <GridPane prefHeight="50.0" prefWidth="300.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">

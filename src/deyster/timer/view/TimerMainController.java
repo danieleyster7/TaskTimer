@@ -4,6 +4,7 @@ import java.util.Date;
 
 import deyster.timer.MainApp;
 import deyster.timer.model.Task;
+import deyster.timer.model.WHDTask;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
@@ -12,11 +13,13 @@ import javafx.scene.control.TableView;
 public class TimerMainController 
 {
 	@FXML
-	private TableView<Task> taskTable;
+	private TableView<WHDTask> taskTable;
 	@FXML
-	private TableColumn<Task, String> taskNameColumn;
+	private TableColumn<WHDTask, String> taskIDColumn;
 	@FXML
-	private TableColumn<Task, String> taskTimeColumn;
+	private TableColumn<WHDTask, String> taskNameColumn;
+	@FXML
+	private TableColumn<WHDTask, String> taskTimeColumn;
 	@FXML
 	private Label workingTask;
 	private MainApp mainApp;
@@ -29,6 +32,8 @@ public class TimerMainController
 	private void initialize()
 	{
 		//Initialize task table with values from task list
+		taskIDColumn.setCellValueFactory(
+				cellData -> cellData.getValue().getTaskIDProperty());
 		taskNameColumn.setCellValueFactory(
 				cellData -> cellData.getValue().getTaskNameProperty());
 		taskTimeColumn.setCellValueFactory(

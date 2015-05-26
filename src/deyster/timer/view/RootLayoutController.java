@@ -2,6 +2,7 @@ package deyster.timer.view;
 
 import deyster.timer.*;
 import deyster.timer.model.Task;
+import deyster.timer.model.WHDTask;
 
 public class RootLayoutController 
 {
@@ -26,11 +27,12 @@ public class RootLayoutController
 	//TODO: handleNewTask
 	public void handleNewTask()
 	{
-		Task tempTask = new Task();
+		WHDTask tempTask = new WHDTask();
 		boolean okClicked = mainApp.showNewTaskDialog(tempTask);
 		if(okClicked)
 			mainApp.getTaskData().add(tempTask);
 	}
+	
 	//TODO: handleClose
 	public void handleClose()
 	{
@@ -41,6 +43,6 @@ public class RootLayoutController
 	//TODO: handledelete
 	public void handleDelete()
 	{
-		
+		mainApp.showDeleteTaskDialog();
 	}
 }

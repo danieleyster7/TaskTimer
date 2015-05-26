@@ -6,23 +6,25 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.stage.Stage;
 import deyster.timer.model.Task;
+import deyster.timer.model.WHDTask;
 
 public class DeleteTaskController 
 {
 	private Stage dialogStage;
 	private boolean okClicked = false;
-	private ObservableList<Task> taskData;
+	private ObservableList<WHDTask> taskData;
 	
 	@FXML
-	private TableView<Task> taskTable;
+	private TableView<WHDTask> taskTable;
 	@FXML
-	private TableColumn<Task, String> taskNameColumn;
+	private TableColumn<WHDTask, String> taskNameColumn;
 	
+	@FXML
 	private void initialize() {
 		//Initialize task table with values from task list
 		taskNameColumn.setCellValueFactory(
 				cellData -> cellData.getValue().getTaskNameProperty());
-	};
+	}
 	
 	public void setDialogStage(Stage dialogStage) {
 		this.dialogStage = dialogStage;
@@ -35,20 +37,17 @@ public class DeleteTaskController
 	}
 	
 	// TODO: Pass task variable
-	public void passTasks(ObservableList<Task> taskData) {
+	public void passTasks(ObservableList<WHDTask> taskData) {
 		this.taskData = taskData;
 	}
 	
-	public void handleOK() 
+	public void handleDelete() 
 	{
 		//Remove the selected
 		taskData.remove(taskTable.getSelectionModel().getSelectedIndex());
-		
-		okClicked = true;
-		dialogStage.close();
 	}
 	
-	public void handleCancel() {
+	public void handleClose() {
 		dialogStage.close();
 	}
 }

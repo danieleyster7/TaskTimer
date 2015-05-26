@@ -16,12 +16,12 @@
       </TableView>
       <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="175.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <Button mnemonicParsing="false" onAction="#handleOK" prefHeight="30.0" prefWidth="100.0" text="Delete">
+            <Button mnemonicParsing="false" onAction="#handleDelete" prefHeight="30.0" prefWidth="100.0" text="Delete">
                <VBox.margin>
                   <Insets left="12.5" top="60.0" />
                </VBox.margin>
             </Button>
-            <Button mnemonicParsing="false" onAction="#handleCancel" prefHeight="30.0" prefWidth="100.0" text="Close">
+            <Button mnemonicParsing="false" onAction="#handleClose" prefHeight="30.0" prefWidth="100.0" text="Close">
                <VBox.margin>
                   <Insets bottom="50.0" left="12.5" top="10.0" />
                </VBox.margin>
