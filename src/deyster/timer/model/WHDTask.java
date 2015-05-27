@@ -19,6 +19,10 @@ public class WHDTask extends Task
 		this.id = id;
 	}
 	
+	public int getID() {
+		return id;
+	}
+	
 	public StringProperty getTaskIDProperty() {
 		return new SimpleStringProperty(Integer.toString(id));
 	}

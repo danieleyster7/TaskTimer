@@ -1,14 +1,24 @@
 package deyster.timer.view;
 
+import java.text.DateFormat;
+import java.util.Calendar;
 import java.util.Date;
+
+import javax.swing.Timer;
 
 import deyster.timer.MainApp;
 import deyster.timer.model.Task;
 import deyster.timer.model.WHDTask;
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.util.Duration;
 
 public class TimerMainController 
 {
@@ -21,10 +31,12 @@ public class TimerMainController
 	@FXML
 	private TableColumn<WHDTask, String> taskTimeColumn;
 	@FXML
-	private Label workingTask;
+	private Label workingTask, timerLabel;
 	private MainApp mainApp;
 	private int startTime, stopTime;
 	private Task currentTask;
+	private DateFormat timerFormat;
+	private Timeline timer;
 	
 	public TimerMainController() {}
 	
@@ -57,6 +69,15 @@ public class TimerMainController
 		currentTask = taskTable.getSelectionModel().getSelectedItem();
 		workingTask.setText(currentTask.getTaskName());
 		startTime = (int) getNewDate().getTime();
+		/*timerFormat = DateFormat.getInstance();
+		timer = new Timeline(new KeyFrame(Duration.seconds(1), new EventHandler<ActionEvent>() {
+					public void handle(ActionEvent event) {
+						Calendar cal = Calendar.getInstance();
+						timerLabel.setText(timerFormat.format(cal.getTime()));
+					}
+				}));
+		timer.setCycleCount(Animation.INDEFINITE);
+		timer.play();*/
 	}
 	
 	public void handleStop()
@@ -66,6 +87,17 @@ public class TimerMainController
 		stopTime = (int) getNewDate().getTime();
 		currentTask.addTime(stopTime - startTime);
 		System.out.println("" + currentTask.getTimeStringProperty());
+	}
+	
+	public void handleNewNote()
+	{
+		
+	}
+	
+	public void handleDetails()
+	{
+		WHDTask selectedTask = taskTable.getSelectionModel().getSelectedItem();
+		mainApp.showDetailsDialog(selectedTask);
 	}
 	
 	private Date getNewDate()

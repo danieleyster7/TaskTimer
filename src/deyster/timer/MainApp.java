@@ -19,10 +19,12 @@ import org.apache.http.impl.client.HttpClients;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import deyster.timer.util.WHD;
 import deyster.timer.view.RootLayoutController;
 import deyster.timer.view.TimerMainController;
 import deyster.timer.dialog.DeleteTaskController;
 import deyster.timer.dialog.NewTaskController;
+import deyster.timer.dialog.ShowDetailsController;
 import deyster.timer.model.Task;
 import deyster.timer.model.Ticket;
 import deyster.timer.model.WHDTask;
@@ -44,7 +46,13 @@ public class MainApp extends Application
 	private ObservableList<WHDTask> taskData = FXCollections.observableArrayList();
 	
 	public MainApp() throws IOException {	
-		getTickets();
+		Gson gson = new Gson();
+		Ticket tickets[] = WHD.getTickets();
+		for(int i = 0; i < tickets.length; i++)
+		{
+			System.out.println(gson.toJson(tickets[i]));
+			taskData.add(new WHDTask(tickets[i].getShortSubject(), tickets[i].getID()));
+		}
 	}
 	
 	public void start(Stage primaryStage) 
@@ -110,7 +118,7 @@ public class MainApp extends Application
         }
 	}
 	
-	public boolean showNewTaskDialog(Task tempTask)
+	public boolean showNewTaskDialog(WHDTask tempTask)
 	{
 		try {
             // Load the fxml file and create a new stage for the popup dialog.
@@ -128,7 +136,7 @@ public class MainApp extends Application
 
             NewTaskController controller = loader.getController();
             controller.setDialogStage(dialogStage);
-            controller.setTask(tempTask);
+            controller.passTicket(tempTask);
 
             // Show the dialog and wait until the user closes it
             dialogStage.showAndWait();
@@ -158,7 +166,7 @@ public class MainApp extends Application
             dialogStage.setScene(scene);
 
             DeleteTaskController controller = loader.getController();
-            controller.passTasks(taskData);
+            controller.passTickets(taskData);
             controller.setDialogStage(dialogStage);
 
             // Show the dialog and wait until the user closes it
@@ -168,6 +176,34 @@ public class MainApp extends Application
         } catch (IOException e) {
             e.printStackTrace();
             return false;
+        }
+	}
+	
+	public void showDetailsDialog(WHDTask ticket)
+	{
+		try {
+            // Load the fxml file and create a new stage for the popup dialog.
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(MainApp.class.getResource("dialog/ShowDetails.fxml"));
+            AnchorPane page = (AnchorPane) loader.load();
+
+            // Create the dialog Stage.
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("Ticket Details");
+            dialogStage.initModality(Modality.WINDOW_MODAL);
+            dialogStage.initOwner(primaryStage);
+            Scene scene = new Scene(page);
+            dialogStage.setScene(scene);
+
+            ShowDetailsController controller = loader.getController();
+            controller.passTicket(ticket);
+            controller.setDialogStage(dialogStage);
+
+            // Show the dialog and wait until the user closes it
+            dialogStage.showAndWait();
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 	}
 	
@@ -184,46 +220,5 @@ public class MainApp extends Application
 	public static void main(String[] args) 
 	{
 		launch(args);
-	}
-	
-	public void getTickets() throws IOException
-	{
-		Gson gson = new Gson();
-		CloseableHttpClient httpclient = HttpClients.createDefault();
-		HttpGet httpget = new HttpGet("https://webhelpdesk.treca.org/helpdesk/WebObjects/Helpdesk.woa/ra/Tickets/mine?apiKey=xrJtiSwVzd8XUxKlKsvyz68YtWrnrX3sdp2hWPA0");
-		
-		ResponseHandler<Ticket[]> rh = new ResponseHandler<Ticket[]>()
-		{
-		    @Override
-		    public Ticket[] handleResponse(final HttpResponse response) throws IOException 
-		    {
-		        StatusLine statusLine = response.getStatusLine();
-		        HttpEntity entity = response.getEntity();
-		        
-		        if (statusLine.getStatusCode() >= 300) {
-		            throw new HttpResponseException(
-		                    statusLine.getStatusCode(),
-		                    statusLine.getReasonPhrase());
-		        }
-		        
-		        if (entity == null) {
-		            throw new ClientProtocolException("Response contains no content");
-		        }
-		        
-		        Gson gson = new GsonBuilder().create();
-		        ContentType contentType = ContentType.getOrDefault(entity);
-		        Charset charset = contentType.getCharset();
-		        Reader reader = new InputStreamReader(entity.getContent(), charset);
-		        return gson.fromJson(reader, Ticket[].class);
-		    }
-		};
-		
-		Ticket tickets[] = httpclient.execute(httpget, rh);
-		
-		for(int i = 0; i < tickets.length; i++)
-		{
-			System.out.println(gson.toJson(tickets[i]));
-			taskData.add(new WHDTask(tickets[i].getShortSubject(), tickets[i].getID()));
-		}
 	}
 }

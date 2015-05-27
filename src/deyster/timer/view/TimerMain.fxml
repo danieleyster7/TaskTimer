@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="400.0" prefWidth="400.0" stylesheets="@DarkTheme.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="deyster.timer.view.TimerMainController">
+<AnchorPane prefHeight="500.0" prefWidth="400.0" stylesheets="@DarkTheme.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="deyster.timer.view.TimerMainController">
    <children>
       <AnchorPane layoutX="50.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -21,13 +21,22 @@
       </AnchorPane>
       <AnchorPane layoutX="42.0" layoutY="251.0" prefHeight="200.0" prefWidth="200.0" styleClass="background" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="300.0">
          <children>
-            <HBox layoutX="44.0" layoutY="13.0" prefHeight="50.0" prefWidth="300.0" spacing="50.0" styleClass="background" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+            <HBox prefHeight="55.0" prefWidth="300.0" spacing="33.3" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                <children>
-                  <Button layoutX="44.0" layoutY="13.0" minHeight="30.0" minWidth="125.0" mnemonicParsing="false" onAction="#handleStart" prefHeight="30.0" prefWidth="125.0" text="Start" />
-                  <Button layoutX="150.0" layoutY="13.0" minHeight="30.0" minWidth="125.0" mnemonicParsing="false" onAction="#handleStop" prefHeight="30.0" prefWidth="125.0" text="Stop" />
+                  <Button mnemonicParsing="false" onAction="#handleDetails" prefHeight="40.0" prefWidth="150.0" text="Details..." />
+                  <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="150.0" text="Add Note..." />
                </children>
                <padding>
-                  <Insets left="50.0" top="10.0" />
+                  <Insets bottom="10.0" left="33.3" top="5.0" />
+               </padding>
+            </HBox>
+            <HBox layoutX="44.0" layoutY="13.0" prefHeight="50.0" prefWidth="300.0" spacing="33.3" styleClass="background" AnchorPane.bottomAnchor="55.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+               <children>
+                  <Button layoutX="44.0" layoutY="13.0" minHeight="30.0" minWidth="125.0" mnemonicParsing="false" onAction="#handleStart" prefHeight="40.0" prefWidth="150.0" text="Start" />
+                  <Button layoutX="150.0" layoutY="13.0" minHeight="30.0" minWidth="125.0" mnemonicParsing="false" onAction="#handleStop" prefHeight="40.0" prefWidth="150.0" text="Stop" />
+               </children>
+               <padding>
+                  <Insets bottom="5.0" left="33.3" top="5.0" />
                </padding>
             </HBox>
             <GridPane prefHeight="50.0" prefWidth="300.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
@@ -40,10 +49,18 @@
               </rowConstraints>
                <children>
                   <Label text="Currently Working On:" />
-                  <Label fx:id="workingTask" styleClass="label-bright" text="Label" GridPane.columnIndex="1" />
+                  <Label fx:id="workingTask" styleClass="label-bright" GridPane.columnIndex="1" />
                </children>
             </GridPane>
          </children>
+      </AnchorPane>
+      <AnchorPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="105.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="350.0">
+         <children>
+            <Label fx:id="timerLabel" alignment="CENTER" text="-running time-" textAlignment="CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+         </children>
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
       </AnchorPane>
    </children>
 </AnchorPane>

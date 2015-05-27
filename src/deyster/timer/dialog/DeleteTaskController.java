@@ -8,9 +8,8 @@ import javafx.stage.Stage;
 import deyster.timer.model.Task;
 import deyster.timer.model.WHDTask;
 
-public class DeleteTaskController 
+public class DeleteTaskController extends DialogController
 {
-	private Stage dialogStage;
 	private boolean okClicked = false;
 	private ObservableList<WHDTask> taskData;
 	
@@ -20,14 +19,14 @@ public class DeleteTaskController
 	private TableColumn<WHDTask, String> taskNameColumn;
 	
 	@FXML
-	private void initialize() {
+	protected void initialize() {
 		//Initialize task table with values from task list
 		taskNameColumn.setCellValueFactory(
 				cellData -> cellData.getValue().getTaskNameProperty());
 	}
 	
 	public void setDialogStage(Stage dialogStage) {
-		this.dialogStage = dialogStage;
+		super.setDialogStage(dialogStage);
 		taskTable.setItems(taskData);
 	}
 	
@@ -37,7 +36,7 @@ public class DeleteTaskController
 	}
 	
 	// TODO: Pass task variable
-	public void passTasks(ObservableList<WHDTask> taskData) {
+	public void passTickets(ObservableList<WHDTask> taskData) {
 		this.taskData = taskData;
 	}
 	
@@ -45,9 +44,5 @@ public class DeleteTaskController
 	{
 		//Remove the selected
 		taskData.remove(taskTable.getSelectionModel().getSelectedIndex());
-	}
-	
-	public void handleClose() {
-		dialogStage.close();
 	}
 }
