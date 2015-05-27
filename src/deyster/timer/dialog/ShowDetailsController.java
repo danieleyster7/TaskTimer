@@ -23,6 +23,7 @@ public class ShowDetailsController extends DialogController
 {
 	private TicketDetail dTicket;
 	private ObservableList<Note> noteList;
+	protected WHDTask ticket;
 	@FXML
 	private TableView<Note> noteTable;
 	@FXML
@@ -65,6 +66,10 @@ public class ShowDetailsController extends DialogController
 	private void showNoteDetails(Note note)
 	{
 		noteField.setText(note.getPrettyUpdatedString() + ": " + note.getMobileNoteText());
+	}
+	
+	public void passTicket(WHDTask ticket) {
+		this.ticket = ticket;
 	}
 	
 }

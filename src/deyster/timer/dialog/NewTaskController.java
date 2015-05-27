@@ -5,10 +5,12 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import deyster.timer.*;
 import deyster.timer.model.Task;
+import deyster.timer.model.WHDTask;
 
 public class NewTaskController extends DialogController
 {
 	private boolean okClicked = false;
+	protected WHDTask ticket;
 	
 	@FXML
 	private TextField taskNameField;
@@ -25,5 +27,9 @@ public class NewTaskController extends DialogController
 		
 		okClicked = true;
 		dialogStage.close();
+	}
+	
+	public void passTicket(WHDTask ticket) {
+		this.ticket = ticket;
 	}
 }
