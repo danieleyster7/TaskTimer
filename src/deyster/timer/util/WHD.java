@@ -19,17 +19,24 @@ import org.apache.http.impl.client.HttpClients;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import deyster.timer.model.Credentials;
 import deyster.timer.model.Ticket;
 import deyster.timer.model.TicketDetail;
 
 public final class WHD 
 {
 	// Currently pulls my tickets with my API
-	public static Ticket[] getTickets() throws IOException
+	public static Ticket[] getTickets(Credentials credentials) throws IOException
 	{
 		Gson gson = new Gson();
 		CloseableHttpClient httpclient = HttpClients.createDefault();
-		HttpGet httpget = new HttpGet("https://webhelpdesk.treca.org/helpdesk/WebObjects/Helpdesk.woa/ra/Tickets?qualifier=(ccAddressesForTech%20like%20%27*deyster@treca.org*%27)&apiKey=xrJtiSwVzd8XUxKlKsvyz68YtWrnrX3sdp2hWPA0");
+		
+		//TODO: FIND EMAIL FOR USER
+		HttpGet httpget = new HttpGet("https://webhelpdesk.treca.org/helpdesk/WebObjects/Helpdesk.woa/ra/Tickets?qualifier=(ccAddressesForTech%20like%20%27*deyster@treca.org*%27)&userName=" + credentials.getUserName() + "&password=" + credentials.getPassword());
+		if(credentials.getAPIKey() != null) {
+			httpget = new HttpGet("https://webhelpdesk.treca.org/helpdesk/WebObjects/Helpdesk.woa/ra/Tickets?qualifier=(ccAddressesForTech%20like%20%27*deyster@treca.org*%27)&apiKey=" + credentials.getAPIKey());
+		}
+			
 		
 		ResponseHandler<Ticket[]> rh = new ResponseHandler<Ticket[]>()
 		{

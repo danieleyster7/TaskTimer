@@ -1,6 +1,7 @@
 package deyster.timer.view;
 
 import deyster.timer.*;
+import deyster.timer.model.Credentials;
 import deyster.timer.model.Task;
 import deyster.timer.model.WHDTask;
 
@@ -13,15 +14,8 @@ public class RootLayoutController
 	 * 
 	 * @param mainApp
 	 */
-	public void setMainApp(MainApp mainApp) 
-	{
+	public void setMainApp(MainApp mainApp) {
 	    this.mainApp = mainApp;
-	}
-	
-	//TODO: handleNewDate
-	public void handleNewDate()
-	{
-		
 	}
 	
 	//TODO: handleNewTask
@@ -41,8 +35,20 @@ public class RootLayoutController
 	}
 	
 	//TODO: handledelete
-	public void handleDelete()
-	{
+	public void handleDelete() {
 		mainApp.showDeleteTaskDialog();
 	}
+	
+	public void handleEnterLogin() {
+		if(mainApp.showCredentialsDialog()) {
+			handleQuickLogin();
+		}
+	}
+	
+	public void handleQuickLogin() {
+		mainApp.loadTickets();
+	}
+	
+	//TODO: handleNewDate
+	public void handleNewDate() {}
 }

@@ -22,9 +22,11 @@ import com.google.gson.GsonBuilder;
 import deyster.timer.util.WHD;
 import deyster.timer.view.RootLayoutController;
 import deyster.timer.view.TimerMainController;
+import deyster.timer.dialog.CredentialsController;
 import deyster.timer.dialog.DeleteTaskController;
 import deyster.timer.dialog.NewTaskController;
 import deyster.timer.dialog.ShowDetailsController;
+import deyster.timer.model.Credentials;
 import deyster.timer.model.Task;
 import deyster.timer.model.Ticket;
 import deyster.timer.model.WHDTask;
@@ -44,21 +46,15 @@ public class MainApp extends Application
 	private Stage primaryStage;
 	private BorderPane rootLayout;
 	private ObservableList<WHDTask> taskData = FXCollections.observableArrayList();
+	private Credentials credentials;
+	private boolean loginNotNull = false;
 	
-	public MainApp() throws IOException {	
-		Gson gson = new Gson();
-		Ticket tickets[] = WHD.getTickets();
-		for(int i = 0; i < tickets.length; i++)
-		{
-			System.out.println(gson.toJson(tickets[i]));
-			taskData.add(new WHDTask(tickets[i].getShortSubject(), tickets[i].getID()));
-		}
-	}
+	public MainApp() {}
 	
 	public void start(Stage primaryStage) 
 	{
 		this.primaryStage = primaryStage;
-        this.primaryStage.setTitle("Task Timer");
+        this.primaryStage.setTitle("WHD Timer");
         this.primaryStage.setResizable(false);
         
         //this.primaryStage.getIcons().add(new Image("file:resources/images/address_book_32.png"));
@@ -148,6 +144,40 @@ public class MainApp extends Application
         }
 	}
 	
+	public boolean showCredentialsDialog()
+	{
+		try {
+            // Load the fxml file and create a new stage for the popup dialog.
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(MainApp.class.getResource("dialog/Credentials.fxml"));
+            AnchorPane page = (AnchorPane) loader.load();
+
+            // Create the dialog Stage.
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("Login Credentials");
+            dialogStage.initModality(Modality.WINDOW_MODAL);
+            dialogStage.initOwner(primaryStage);
+            Scene scene = new Scene(page);
+            dialogStage.setScene(scene);
+
+            CredentialsController controller = loader.getController();
+            controller.setDialogStage(dialogStage);
+
+            // Show the dialog and wait until the user closes it
+            dialogStage.showAndWait();
+
+            credentials = controller.getCredentials();
+            if(credentials != null) {
+            	loginNotNull = true;
+            }
+            
+            return controller.isOKClicked();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+	}
+	
 	// TODO: Pass list to be updated
 	public boolean showDeleteTaskDialog()
 	{
@@ -207,18 +237,34 @@ public class MainApp extends Application
         }
 	}
 	
-	public ObservableList<WHDTask> getTaskData()
-	{
+	public void loadTickets() {
+		Gson gson = new Gson();
+		if(loginNotNull) 
+		{
+			try {
+				Ticket tickets[] = WHD.getTickets(credentials);
+				for(int i = 0; i < tickets.length; i++)
+				{
+					System.out.println(gson.toJson(tickets[i]));
+					taskData.add(new WHDTask(tickets[i].getShortSubject(), tickets[i].getID()));
+				}
+			}
+			catch(IOException io) {
+				io.printStackTrace();
+			}
+			
+		}
+	}
+	
+	public ObservableList<WHDTask> getTaskData() {
 		return taskData;
 	}
 	
-	public Stage getPrimaryStage() 
-	{
+	public Stage getPrimaryStage() {
 		return primaryStage;
 	}
 
-	public static void main(String[] args) 
-	{
+	public static void main(String[] args) {
 		launch(args);
 	}
 }

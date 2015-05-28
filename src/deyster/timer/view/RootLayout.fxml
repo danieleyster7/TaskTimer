@@ -5,13 +5,14 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.BorderPane?>
 
-<BorderPane prefHeight="525.0" prefWidth="375.0" stylesheets="@DarkTheme.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="deyster.timer.view.RootLayoutController">
+<BorderPane prefHeight="525.0" prefWidth="400.0" stylesheets="@DarkTheme.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="deyster.timer.view.RootLayoutController">
    <top>
       <MenuBar BorderPane.alignment="CENTER">
         <menus>
           <Menu mnemonicParsing="false" text="File">
             <items>
-                  <MenuItem mnemonicParsing="false" text="New Day..." />
+                  <MenuItem mnemonicParsing="false" onAction="#handleEnterLogin" text="Login..." />
+                  <MenuItem mnemonicParsing="false" onAction="#handleQuickLogin" text="Quick Login" />
               <MenuItem mnemonicParsing="false" text="Exit" />
             </items>
           </Menu>
