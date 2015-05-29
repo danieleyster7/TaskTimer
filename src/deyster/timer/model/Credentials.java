@@ -9,6 +9,7 @@ public class Credentials implements Serializable
 	private String userName;
 	private String password;
 	private String apiKey;
+	private String email;
 	private int authType;
 	
 	public Credentials() {};
@@ -42,6 +43,10 @@ public class Credentials implements Serializable
 		this.authType = authType;
 	}
 	
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	
 	public String getUserName() {
 		return userName;
 	}
@@ -56,5 +61,9 @@ public class Credentials implements Serializable
 	
 	public int getAuthType() {
 		return authType;
+	}
+	
+	public String getEmail() {
+		return email;
 	}
 }

@@ -19,6 +19,8 @@ import org.apache.http.impl.client.HttpClients;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import deyster.timer.util.CredentialLoader;
+import deyster.timer.util.TicketLoader;
 import deyster.timer.util.WHD;
 import deyster.timer.view.RootLayoutController;
 import deyster.timer.view.TimerMainController;
@@ -45,11 +47,13 @@ public class MainApp extends Application
 {
 	private Stage primaryStage;
 	private BorderPane rootLayout;
-	private ObservableList<WHDTask> taskData = FXCollections.observableArrayList();
+	private ObservableList<WHDTask> taskData;
 	private Credentials credentials;
 	private boolean loginNotNull = false;
 	
-	public MainApp() {}
+	public MainApp() {
+		taskData = TicketLoader.load();
+	}
 	
 	public void start(Stage primaryStage) 
 	{
@@ -228,7 +232,7 @@ public class MainApp extends Application
 
             ShowDetailsController controller = loader.getController();
             controller.passTicket(ticket);
-            controller.setDialogStage(dialogStage);
+            controller.setDialogStage(dialogStage, credentials);
 
             // Show the dialog and wait until the user closes it
             dialogStage.showAndWait();
@@ -238,23 +242,29 @@ public class MainApp extends Application
         }
 	}
 	
-	public void loadTickets() {
+	public void pullTickets() {
 		Gson gson = new Gson();
-		if(loginNotNull) 
-		{
-			try {
-				Ticket tickets[] = WHD.getTickets(credentials);
-				for(int i = 0; i < tickets.length; i++)
-				{
-					System.out.println(gson.toJson(tickets[i]));
-					taskData.add(new WHDTask(tickets[i].getShortSubject(), tickets[i].getID()));
-				}
+		
+		try {
+			Ticket tickets[] = WHD.getTickets(credentials);
+			for(int i = 0; i < tickets.length; i++)
+			{
+				//System.out.println(gson.toJson(tickets[i]));
+				taskData.add(new WHDTask(tickets[i].getShortSubject(), tickets[i].getID()));
 			}
-			catch(Exception e) {
-				e.printStackTrace();
-			}
-			
 		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void saveTickets() {
+		TicketLoader.save(taskData);
+	}
+	
+	public void loadCredentials() {
+		credentials = CredentialLoader.load();
+		pullTickets();
 	}
 	
 	public ObservableList<WHDTask> getTaskData() {

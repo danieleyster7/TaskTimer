@@ -31,6 +31,7 @@ public class RootLayoutController
 	public void handleClose()
 	{
 		//TODO: Add save point to re-open on
+		mainApp.saveTickets();
 		System.exit(0);
 	}
 	
@@ -41,12 +42,12 @@ public class RootLayoutController
 	
 	public void handleEnterLogin() {
 		if(mainApp.showCredentialsDialog()) {
-			handleQuickLogin();
+			mainApp.pullTickets();
 		}
 	}
 	
 	public void handleQuickLogin() {
-		mainApp.loadTickets();
+		mainApp.loadCredentials();
 	}
 	
 	//TODO: handleNewDate

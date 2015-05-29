@@ -13,15 +13,10 @@
             <items>
                   <MenuItem mnemonicParsing="false" onAction="#handleEnterLogin" text="Login..." />
                   <MenuItem mnemonicParsing="false" onAction="#handleQuickLogin" text="Quick Login" />
-              <MenuItem mnemonicParsing="false" text="Exit" />
+              <MenuItem mnemonicParsing="false" onAction="#handleClose" text="Exit" />
             </items>
           </Menu>
-          <Menu mnemonicParsing="false" text="Edit">
-            <items>
-                  <MenuItem mnemonicParsing="false" onAction="#handleNewTask" text="New Task..." />
-              <MenuItem mnemonicParsing="false" onAction="#handleDelete" text="Delete Task..." />
-            </items>
-          </Menu>
+          <Menu mnemonicParsing="false" text="Edit" />
           <Menu mnemonicParsing="false" text="Help">
             <items>
               <MenuItem mnemonicParsing="false" text="About" />

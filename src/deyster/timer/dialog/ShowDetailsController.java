@@ -6,6 +6,7 @@ import java.util.Locale;
 
 import com.google.gson.Gson;
 
+import deyster.timer.model.Credentials;
 import deyster.timer.model.Note;
 import deyster.timer.model.TicketDetail;
 import deyster.timer.model.WHDTask;
@@ -45,11 +46,11 @@ public class ShowDetailsController extends DialogController
 				(observable, oldValue, newValue) -> showNoteDetails(newValue));
 	}
 	
-	public void setDialogStage(Stage dialogStage) 
+	public void setDialogStage(Stage dialogStage, Credentials credentials) 
 	{
 		super.setDialogStage(dialogStage);
 		try {
-		dTicket = WHD.getTicketDetails(ticket.getID());
+		dTicket = WHD.getTicketDetails(ticket.getID(), credentials);
 		} catch (IOException io) {
 			io.printStackTrace();
 		}

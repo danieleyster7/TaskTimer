@@ -6,7 +6,10 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 
 import deyster.timer.model.Credentials;
+import deyster.timer.util.CredentialLoader;
+import deyster.timer.util.WHD;
 import javafx.fxml.FXML;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
 public class CredentialsController extends DialogController
@@ -14,7 +17,7 @@ public class CredentialsController extends DialogController
 	@FXML
 	private TextField userName;
 	@FXML
-	private TextField password;
+	private PasswordField password;
 	@FXML
 	private TextField apiKey;
 	private Credentials credentials;
@@ -35,19 +38,9 @@ public class CredentialsController extends DialogController
 	public void handleSave()
 	{
 		//If an API or user/pass is given, save data
-		if(checkFields() > 0)
-		{
-			try 
-			{
-				FileOutputStream fileOut = new FileOutputStream("/prefs/userData.bin");
-				ObjectOutputStream out = new ObjectOutputStream(fileOut);
-				out.writeObject(credentials);
-				out.close();
-				fileOut.close();
-			}
-			catch (IOException io) {
-				io.printStackTrace();
-			}
+		if(checkFields() > 0) {
+			credentials.setEmail(WHD.getEmail(credentials));
+			CredentialLoader.save(credentials);
 		}
 	}
 	
@@ -66,13 +59,14 @@ public class CredentialsController extends DialogController
 			else {
 				// Use userName and Password
 				credentials = new Credentials(userName.getText(), password.getText());
+				credentials.setEmail(WHD.getEmail(credentials));
 				return PASS;
 			}
 		}
 		else {
-			System.out.println("APIKEY DETECTED");
 			// Use apiKey
 			credentials = new Credentials(apiKey.getText());
+			credentials.setEmail(WHD.getEmail(credentials));
 			return API;
 		}
 		return NULL;
