@@ -3,6 +3,8 @@ package deyster.timer.util;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 
 import org.apache.http.HttpEntity;
@@ -12,6 +14,7 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.ContentType;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -26,16 +29,38 @@ import deyster.timer.model.TicketDetail;
 public final class WHD 
 {
 	// Currently pulls my tickets with my API
-	public static Ticket[] getTickets(Credentials credentials) throws IOException
+	public static Ticket[] getTickets(Credentials credentials) throws IOException, URISyntaxException
 	{
 		Gson gson = new Gson();
 		CloseableHttpClient httpclient = HttpClients.createDefault();
 		
 		//TODO: FIND EMAIL FOR USER
-		HttpGet httpget = new HttpGet("https://webhelpdesk.treca.org/helpdesk/WebObjects/Helpdesk.woa/ra/Tickets?qualifier=(ccAddressesForTech%20like%20%27*deyster@treca.org*%27)&userName=" + credentials.getUserName() + "&password=" + credentials.getPassword());
-		if(credentials.getAPIKey() != null) {
+		
+		/*URIBuilder uriBuild = new URIBuilder();
+		uriBuild.setScheme("https").setHost("webhelpdesk.treca.org").setPath("/helpdesk/WebObjects/Helpdesk.woa/ra/Tickets")
+			.setParameter("qualifier", "(ccAddressesForTech like '*deyster@treca.org*')");
+		uriBuild.
+		
+		if(credentials.getAuthType() == credentials.API) {
+			uriBuild.setParameter("apiKey", credentials.getAPIKey());
+		}
+		else {
+			uriBuild.setParameter("userName", credentials.getUserName()).setParameter("password", credentials.getPassword());
+		}
+		
+		URI uri = uriBuild.build();
+		System.out.println(uri.toString());
+		HttpGet httpget = new HttpGet(uri);*/
+		
+		
+		HttpGet httpget;
+		if(credentials.getAuthType() == credentials.API) {
 			httpget = new HttpGet("https://webhelpdesk.treca.org/helpdesk/WebObjects/Helpdesk.woa/ra/Tickets?qualifier=(ccAddressesForTech%20like%20%27*deyster@treca.org*%27)&apiKey=" + credentials.getAPIKey());
 		}
+		else {
+			httpget = new HttpGet("https://webhelpdesk.treca.org/helpdesk/WebObjects/Helpdesk.woa/ra/Tickets?qualifier=(ccAddressesForTech%20like%20%27*deyster@treca.org*%27)&userName=" + credentials.getUserName() + "&password=" + credentials.getPassword());
+		}
+			
 			
 		
 		ResponseHandler<Ticket[]> rh = new ResponseHandler<Ticket[]>()

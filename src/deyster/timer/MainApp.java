@@ -168,9 +168,10 @@ public class MainApp extends Application
 
             credentials = controller.getCredentials();
             if(credentials != null) {
+            	System.out.println("CREDS NOT NULL");
             	loginNotNull = true;
             }
-            
+            System.out.println("" + controller.isOKClicked());
             return controller.isOKClicked();
         } catch (IOException e) {
             e.printStackTrace();
@@ -249,8 +250,8 @@ public class MainApp extends Application
 					taskData.add(new WHDTask(tickets[i].getShortSubject(), tickets[i].getID()));
 				}
 			}
-			catch(IOException io) {
-				io.printStackTrace();
+			catch(Exception e) {
+				e.printStackTrace();
 			}
 			
 		}
