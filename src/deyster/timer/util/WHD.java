@@ -1,7 +1,10 @@
 package deyster.timer.util;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.io.Reader;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -14,8 +17,10 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.ContentType;
+import org.apache.http.entity.FileEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 
@@ -23,46 +28,33 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import deyster.timer.model.Credentials;
+import deyster.timer.model.NewNote;
 import deyster.timer.model.Ticket;
 import deyster.timer.model.TicketDetail;
 
+/* Static utility class to make http requests via api calls
+ * Stores user's credentials as a static member so it can be stored and accessed easily by the program */
 public final class WHD 
 {
+	public static Credentials credentials;
 	
-	// Pulls all tickets the user is CC'd on
-	public static Ticket[] getTickets(Credentials credentials) throws IOException, URISyntaxException
+	/* Pulls all tickets the user is CC'd on
+	 * Will be updated to pull tickets based on other criteria */
+	public static Ticket[] getTickets() throws IOException, URISyntaxException
 	{
 		Gson gson = new Gson();
 		CloseableHttpClient httpclient = HttpClients.createDefault();
 		HttpGet httpget;
-		
-		/*URIBuilder uriBuild = new URIBuilder();
-		uriBuild.setScheme("https").setHost("webhelpdesk.treca.org").setPath("/helpdesk/WebObjects/Helpdesk.woa/ra/Tickets")
-			.setParameter("qualifier", "(ccAddressesForTech like '*deyster@treca.org*')");
-		uriBuild.
-		
-		if(credentials.getAuthType() == credentials.API) {
-			uriBuild.setParameter("apiKey", credentials.getAPIKey());
-		}
-		else {
-			uriBuild.setParameter("userName", credentials.getUserName()).setParameter("password", credentials.getPassword());
-		}
-		
-		URI uri = uriBuild.build();
-		System.out.println(uri.toString());
-		HttpGet httpget = new HttpGet(uri);*/
-		
-		
-		
-		if(credentials.getAuthType() == credentials.API) {
+		System.out.println("" + credentials.getAuthType());
+		// Structure the http request based on authtype
+		if(credentials.getAuthType() == Credentials.API) {
 			httpget = new HttpGet("https://webhelpdesk.treca.org/helpdesk/WebObjects/Helpdesk.woa/ra/Tickets?qualifier=(ccAddressesForTech%20like%20%27*deyster@treca.org*%27)&apiKey=" + credentials.getAPIKey());
 		}
 		else {
 			httpget = new HttpGet("https://webhelpdesk.treca.org/helpdesk/WebObjects/Helpdesk.woa/ra/Tickets?qualifier=(ccAddressesForTech%20like%20%27*deyster@treca.org*%27)&username=" + credentials.getUserName() + "&password=" + credentials.getPassword());
 		}
-			
-			
 		
+		// Anonymous response handler class to handle the tickets returned from the http request
 		ResponseHandler<Ticket[]> rh = new ResponseHandler<Ticket[]>()
 		{
 		    @Override
@@ -89,13 +81,12 @@ public final class WHD
 		    }
 		};
 		
-		//Ticket tickets[] = httpclient.execute(httpget, rh);
-		
+		//Return the tickets given the http request and responsehandler, rh
 		return httpclient.execute(httpget, rh);
 	}
 	
 	//Pulls the details of the given ticket
-	public static TicketDetail getTicketDetails(int id, Credentials credentials) throws IOException
+	public static TicketDetail getTicketDetails(int id) throws IOException
 	{
 		Gson gson = new Gson();
 		CloseableHttpClient httpclient = HttpClients.createDefault();
@@ -138,7 +129,7 @@ public final class WHD
 	}
 	
 	//Pulls the email for the given user's credentials
-	public static String getEmail(Credentials credentials)
+	public static void getEmail()
 	{
 		Gson gson = new Gson();
 		CloseableHttpClient httpclient = HttpClients.createDefault();
@@ -178,11 +169,37 @@ public final class WHD
 		};
 		
 		try {
-			return httpclient.execute(httpget, rh)[0].email;
+			credentials.setEmail(httpclient.execute(httpget, rh)[0].email);
 		}
 		catch (IOException io) {
 			io.printStackTrace();
-			return "invalid email";
+		}
+	}
+	
+	/* Sends a note for a ticket given a newNote object */
+	public static void sendNote(NewNote newNote)
+	{
+		Gson gson = new Gson();
+		CloseableHttpClient httpclient = HttpClients.createDefault();
+		String noteJsonString = gson.toJson(newNote);
+		
+		try
+		{
+			//Write the json object to a file
+			PrintWriter output = new PrintWriter("note.json", "UTF-8");
+			output.write(noteJsonString);
+			output.close();
+			
+			//Set the http request and json to be posted
+			File file = new File("note.json");
+			FileEntity entity = new FileEntity(file);
+			HttpPost httppost = new HttpPost("https://webhelpdesk.treca.org/helpdesk/WebObjects/Helpdesk.woa/ra/TechNotes?username=" + credentials.getUserName() + "&password=" + credentials.getPassword());
+			httppost.setEntity(entity);
+			
+			httpclient.execute(httppost);
+		}
+		catch (IOException io) {
+			io.printStackTrace();
 		}
 	}
 }

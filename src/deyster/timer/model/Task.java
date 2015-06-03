@@ -1,15 +1,20 @@
 package deyster.timer.model;
 
+import java.io.Serializable;
+
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-public class Task 
+/* Original class for a 'ticket'
+ * Class was extended via WHDTask to interface with WHD
+ * Task class contains name, time clocked and time clocked in a string */
+public class Task implements Serializable
 {
 	private String taskName;
 	private int taskMinutes;
 	private int taskHours;
 	private int taskSeconds;
-	private StringProperty timeString;
+	private transient StringProperty timeString;
 	
 	public Task()
 	{
@@ -30,10 +35,8 @@ public class Task
 		timeString = new SimpleStringProperty("00:00:00");
 	}
 	
-	/*
-	 * Pass time to be added to task in milliseconds.
-	 * Calls functions to convert to hours and mins, and stores
-	*/
+	/* Pass time to be added to task in milliseconds.
+	 * Calls functions to convert to hours and mins, and stores */
 	public void addTime(int timeInMilli)
 	{
 		//Add accrued time
@@ -55,7 +58,8 @@ public class Task
 		setTimeStringProperty();
 	}
 	
-	private void setTimeStringProperty()
+	/* Function to set the StringProperty for display on tableview */
+	public void setTimeStringProperty()
 	{
 		String taskTime = "";
 		if(taskHours < 10)
@@ -73,45 +77,41 @@ public class Task
 		else
 			taskTime += ":" + Integer.toString(taskSeconds);
 		
+		if(timeString == null) {
+			timeString = new SimpleStringProperty("00:00:00");
+		}
 		timeString.set(taskTime);
 	}
 	
 	//Returns taskName wrapped in a StringProperty for JFX display
-	public StringProperty getTaskNameProperty() 
-	{
+	public StringProperty getTaskNameProperty() {
 		return new SimpleStringProperty(taskName);
 	}
 	
 	//Returns total task time in a StringProperty for JFX display
-	public StringProperty getTimeStringProperty()
-	{
+	public StringProperty getTimeStringProperty() {
 		return timeString;
 	}
 	
 	//Converts milliseconds to hours, drops remainder
-	private int convertHours(int time) 
-	{
+	private int convertHours(int time) {
 		return (time / 3600000);
 	}
 	
 	//Converts remaining milliseconds from convertHours to minutes, drops remainder
-	private int convertMins(int time) 
-	{
+	private int convertMins(int time) {
 		return ((time % 3600000) / 60000);
 	}
 	
-	private int convertSecs(int time)
-	{
+	private int convertSecs(int time) {
 		return (((time % 3600000) % 60000) / 1000);
 	}
 	
-	public String getTaskName()
-	{
+	public String getTaskName() {
 		return taskName;
 	}
 	
-	public void setTaskName(String name)
-	{
+	public void setTaskName(String name) {
 		taskName = name;
 	}
 	

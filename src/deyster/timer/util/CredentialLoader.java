@@ -8,8 +8,10 @@ import java.io.ObjectOutputStream;
 
 import deyster.timer.model.Credentials;
 
+/* Static utility class to hold methods to load and save credentials */
 public final class CredentialLoader 
-{
+{	
+	/* Saves user credentials to userData.bin as an object for easy loading */
 	public static void save(Credentials credentials)
 	{
 		try 
@@ -25,6 +27,7 @@ public final class CredentialLoader
 		}
 	}
 	
+	/* Loads user credentials from userData.bin */
 	public static Credentials load()
 	{
 		try

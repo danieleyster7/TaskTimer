@@ -48,11 +48,79 @@ public class MainApp extends Application
 	private Stage primaryStage;
 	private BorderPane rootLayout;
 	private ObservableList<WHDTask> taskData;
-	private Credentials credentials;
 	private boolean loginNotNull = false;
 	
+	/* Constructor, runs immediately on startup
+	 * loads the tickets into its observable list
+	 * sets the string property to display the time in the tickets */
 	public MainApp() {
 		taskData = TicketLoader.load();
+		for(int i = 0; i < taskData.size(); i++) {
+			taskData.get(i).setTimeStringProperty();
+		}
+	}
+	
+	/* Gets tickets via HTTPRequest
+	 * Adds them to the observable list */
+	public void pullTickets() {
+		Gson gson = new Gson();
+		try {
+			Ticket tickets[] = WHD.getTickets();
+			for(int i = 0; i < tickets.length; i++)
+			{
+				//System.out.println(gson.toJson(tickets[i]));
+				if(isNewTicket(tickets[i].getID())) {
+					taskData.add(new WHDTask(tickets[i].getShortSubject(), tickets[i].getType(), tickets[i].getID()));
+				}
+			}
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	// Returns if the ticket fetched is new based on id
+	private boolean isNewTicket(int id)
+	{
+		if(taskData.size() > 0) {
+			return isNewTicket(id, taskData.get(taskData.size() - 1));
+		}
+		return true;
+	}
+	
+	// Returns if the ticket fetched is new based on id
+	private boolean isNewTicket(int id, WHDTask ticket)
+	{
+		if(id == ticket.getID()) {
+			return false;
+		}
+		else if(taskData.indexOf(ticket) == 0) {
+			return true;
+		}
+		else {
+			return isNewTicket(id, taskData.get(taskData.indexOf(ticket) - 1));
+		}
+		
+	}
+	
+	/* Calls TicketLoader to save tickets to local disk */
+	public void saveTickets() {
+		TicketLoader.save(taskData);
+	}
+	
+	/* Calls CredentialLoader to load credentials */
+	public void loadCredentials() {
+		WHD.credentials = CredentialLoader.load();
+		pullTickets();
+	}
+	
+	/* Returns the observable list of tickets */
+	public ObservableList<WHDTask> getTaskData() {
+		return taskData;
+	}
+	
+	public Stage getPrimaryStage() {
+		return primaryStage;
 	}
 	
 	public void start(Stage primaryStage) 
@@ -60,17 +128,11 @@ public class MainApp extends Application
 		this.primaryStage = primaryStage;
         this.primaryStage.setTitle("WHD Timer");
         this.primaryStage.setResizable(false);
-        
-        //this.primaryStage.getIcons().add(new Image("file:resources/images/address_book_32.png"));
-
         initRootLayout();
-
         showTimerMain();
 	}
 	
-	/*
-	 * Initializes root layout (file, edit, etc menus)
-	 */
+	 /* Initializes root layout (file, edit, etc menus) */
 	public void initRootLayout()
 	{
 		try 
@@ -118,6 +180,7 @@ public class MainApp extends Application
         }
 	}
 	
+	//Possibly obsolete, possibly change to new ticket
 	public boolean showNewTaskDialog(WHDTask tempTask)
 	{
 		try {
@@ -148,6 +211,9 @@ public class MainApp extends Application
         }
 	}
 	
+	/* Shows the credentials dialog popup
+	 * Credentials dialog sets the credentials of WHD static class to make http requests
+	 * Tickets are loaded if credentials are inputed */
 	public boolean showCredentialsDialog()
 	{
 		try {
@@ -169,13 +235,8 @@ public class MainApp extends Application
 
             // Show the dialog and wait until the user closes it
             dialogStage.showAndWait();
-
-            credentials = controller.getCredentials();
-            if(credentials != null) {
-            	System.out.println("CREDS NOT NULL");
-            	loginNotNull = true;
-            }
-            System.out.println("" + controller.isOKClicked());
+            
+            //If okay clicked, tickets will be loaded
             return controller.isOKClicked();
         } catch (IOException e) {
             e.printStackTrace();
@@ -183,7 +244,7 @@ public class MainApp extends Application
         }
 	}
 	
-	// TODO: Pass list to be updated
+	// Possibly obsolete, maybe swap to delete ticket/note
 	public boolean showDeleteTaskDialog()
 	{
 		try {
@@ -214,6 +275,8 @@ public class MainApp extends Application
         }
 	}
 	
+	/* Shows the ticket details dialog box
+	 * It will display the details and notes for the ticket */
 	public void showDetailsDialog(WHDTask ticket)
 	{
 		try {
@@ -232,7 +295,7 @@ public class MainApp extends Application
 
             ShowDetailsController controller = loader.getController();
             controller.passTicket(ticket);
-            controller.setDialogStage(dialogStage, credentials);
+            controller.setDialogStage(dialogStage);
 
             // Show the dialog and wait until the user closes it
             dialogStage.showAndWait();
@@ -240,39 +303,6 @@ public class MainApp extends Application
         } catch (IOException e) {
             e.printStackTrace();
         }
-	}
-	
-	public void pullTickets() {
-		Gson gson = new Gson();
-		
-		try {
-			Ticket tickets[] = WHD.getTickets(credentials);
-			for(int i = 0; i < tickets.length; i++)
-			{
-				//System.out.println(gson.toJson(tickets[i]));
-				taskData.add(new WHDTask(tickets[i].getShortSubject(), tickets[i].getID()));
-			}
-		}
-		catch(Exception e) {
-			e.printStackTrace();
-		}
-	}
-	
-	public void saveTickets() {
-		TicketLoader.save(taskData);
-	}
-	
-	public void loadCredentials() {
-		credentials = CredentialLoader.load();
-		pullTickets();
-	}
-	
-	public ObservableList<WHDTask> getTaskData() {
-		return taskData;
-	}
-	
-	public Stage getPrimaryStage() {
-		return primaryStage;
 	}
 
 	public static void main(String[] args) {

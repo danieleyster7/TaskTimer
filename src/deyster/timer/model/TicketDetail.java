@@ -3,6 +3,7 @@ package deyster.timer.model;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+/* Class to hold json data for a ticket's details from a http request */
 public class TicketDetail extends Ticket
 {
 	private String ccAddressesForTech;

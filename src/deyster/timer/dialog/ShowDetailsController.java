@@ -20,6 +20,8 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
+/* Controller class for the ticket details dialog box
+ * The class handles the selection of notes and displays them in the text field */
 public class ShowDetailsController extends DialogController
 {
 	private TicketDetail dTicket;
@@ -38,6 +40,8 @@ public class ShowDetailsController extends DialogController
 	@FXML
 	private TextArea detailField;
 	
+	/* Sets the table for the notes to the notes pulled from the ticket
+	 * Adds a listener to the selection of the note table so the note text is displayed */
 	@FXML
 	protected void initialize()
 	{
@@ -46,11 +50,15 @@ public class ShowDetailsController extends DialogController
 				(observable, oldValue, newValue) -> showNoteDetails(newValue));
 	}
 	
-	public void setDialogStage(Stage dialogStage, Credentials credentials) 
+	
+	/* Sets the dialog stage passed by mainapp
+	 * Pulls the ticket details for the given ticket
+	 * Sets the dialog box's properties based of the details */
+	public void setDialogStage(Stage dialogStage) 
 	{
 		super.setDialogStage(dialogStage);
 		try {
-		dTicket = WHD.getTicketDetails(ticket.getID(), credentials);
+			dTicket = WHD.getTicketDetails(ticket.getID());
 		} catch (IOException io) {
 			io.printStackTrace();
 		}
@@ -59,16 +67,14 @@ public class ShowDetailsController extends DialogController
 		whdNumLabel.setText(Integer.toString(dTicket.getID()));
 		subjectLabel.setText(dTicket.getSubject());
 		detailField.setText(dTicket.getDetail());
-		
-		Gson gson = new Gson();
-		System.out.println(gson.toJson(dTicket));
 	}
 	
-	private void showNoteDetails(Note note)
-	{
+	/* Shows the note text based on the note selected by the user */
+	private void showNoteDetails(Note note) {
 		noteField.setText(note.getPrettyUpdatedString() + ": " + note.getMobileNoteText());
 	}
 	
+	/* Mainapp passes the ticket to this class via this function */
 	public void passTicket(WHDTask ticket) {
 		this.ticket = ticket;
 	}

@@ -3,8 +3,8 @@ package deyster.timer.model;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-
-
+/* Class to hold notes for a given ticket
+ * Contains note id, type, date, text, etc */
 public class Note 
 {
 	private int id;

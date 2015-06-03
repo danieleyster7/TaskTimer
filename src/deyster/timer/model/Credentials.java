@@ -2,6 +2,8 @@ package deyster.timer.model;
 
 import java.io.Serializable;
 
+/* Credentials class to hold credentials for user
+ * Uses authType to determine how to authenticate via http requests */
 public class Credentials implements Serializable
 {
 	public static final int API = 2;
@@ -14,6 +16,7 @@ public class Credentials implements Serializable
 	
 	public Credentials() {};
 	
+	/* constructor for username/password, sets authtype as password */
 	public Credentials(String userName, String password)
 	{
 		this.userName = userName;
@@ -21,6 +24,7 @@ public class Credentials implements Serializable
 		authType = PASS;
 	}
 	
+	/* constructor for apikey, sets authtype as api */
 	public Credentials(String apiKey) 
 	{
 		this.apiKey = apiKey;

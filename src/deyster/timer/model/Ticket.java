@@ -1,5 +1,6 @@
 package deyster.timer.model;
 
+/* Class to hold json ticket data returned by a http request */
 public class Ticket {
 	protected int id;
 	protected String type;
@@ -19,5 +20,18 @@ public class Ticket {
 	
 	public int getID() {
 		return id;
+	}
+	
+	public String getType() {
+		return type;
+	}
+	
+	public class ShortNote
+	{
+		public int id;
+		public String type;
+		public String mobileListText;
+		public String noteColor;
+		public String noteClass;
 	}
 }

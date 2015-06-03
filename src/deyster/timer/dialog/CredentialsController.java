@@ -11,7 +11,10 @@ import deyster.timer.util.WHD;
 import javafx.fxml.FXML;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-
+/*
+ * Controller class for the credentials dialog box
+ * Class handles the actions of the ok, save and cancel buttons
+ */
 public class CredentialsController extends DialogController
 {
 	@FXML
@@ -26,6 +29,7 @@ public class CredentialsController extends DialogController
 	private final int PASS = 1;
 	private final int API = 2;
 	
+	// Fires when OK clicked
 	public void handleOK() 
 	{
 		//If an API or user/pass is given, close
@@ -35,15 +39,18 @@ public class CredentialsController extends DialogController
 		}
 	}
 	
+	// Fires when Save clicked
 	public void handleSave()
 	{
 		//If an API or user/pass is given, save data
 		if(checkFields() > 0) {
-			credentials.setEmail(WHD.getEmail(credentials));
-			CredentialLoader.save(credentials);
+			//Save credentials to local disk
+			CredentialLoader.save(WHD.credentials);
 		}
 	}
 	
+	/* Function checks the fields to make sure either a username/pass is entered or a api key
+	 * Function then assigns the credentials to the WHD static class and has it fetch the email for the user */
 	public int checkFields()
 	{
 		// If apiKey is empty, check username & password
@@ -58,24 +65,21 @@ public class CredentialsController extends DialogController
 			}
 			else {
 				// Use userName and Password
-				credentials = new Credentials(userName.getText(), password.getText());
-				credentials.setEmail(WHD.getEmail(credentials));
+				WHD.credentials = new Credentials(userName.getText(), password.getText());
+				WHD.getEmail();
 				return PASS;
 			}
 		}
 		else {
 			// Use apiKey
-			credentials = new Credentials(apiKey.getText());
-			credentials.setEmail(WHD.getEmail(credentials));
+			WHD.credentials = new Credentials(apiKey.getText());
+			WHD.getEmail();
 			return API;
 		}
 		return NULL;
 	}
 	
-	public Credentials getCredentials() {
-		return credentials;
-	}
-	
+	// Returns true if ok was clicked, used by rootcontroller to determine if it should attempt to load tickets
 	public boolean isOKClicked() {
 		return okClicked;
 	}

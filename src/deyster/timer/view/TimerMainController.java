@@ -20,6 +20,9 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.util.Duration;
 
+/* Controller class for handling actions on the main window
+ * Contains functions for populating the table, starting and stopping time,
+ * details, and new notes */
 public class TimerMainController 
 {
 	@FXML
@@ -40,6 +43,7 @@ public class TimerMainController
 	
 	public TimerMainController() {}
 	
+	/* initializes the task table with the users ticket data */
 	@FXML
 	private void initialize()
 	{
@@ -52,20 +56,18 @@ public class TimerMainController
 				cellData -> cellData.getValue().getTimeStringProperty());
 	}
 	
-	/*
-	 * Sets passed MainApp as its main program
-	 * Retrieves list of task data and puts on table
-	 */
+	/* Sets passed MainApp as its main program
+	 * Retrieves list of task data and puts on table */
 	public void setMainApp(MainApp mainApp)
 	{
 		this.mainApp = mainApp;
 		taskTable.setItems(mainApp.getTaskData());
 	}
 	
-	//TODO: Handle Buttons
+	/* Displays the task being timed and records the time of start
+	 * TODO: display running time in realtime */
 	public void handleStart()
 	{
-		System.out.println("Start");
 		currentTask = taskTable.getSelectionModel().getSelectedItem();
 		workingTask.setText(currentTask.getTaskName());
 		startTime = (int) getNewDate().getTime();
@@ -80,28 +82,31 @@ public class TimerMainController
 		timer.play();*/
 	}
 	
+	/* Stops the running time for the ticket
+	 * records the time to the ticket (locally) */
 	public void handleStop()
 	{
 		System.out.println("Stop");
 		workingTask.setText("Nothing");
 		stopTime = (int) getNewDate().getTime();
 		currentTask.addTime(stopTime - startTime);
-		System.out.println("" + currentTask.getTimeStringProperty());
 	}
 	
+	//TODO: implement new note to ticket
 	public void handleNewNote()
 	{
 		
 	}
 	
+	/* Displays the details dialog box for the selected ticket */
 	public void handleDetails()
 	{
 		WHDTask selectedTask = taskTable.getSelectionModel().getSelectedItem();
 		mainApp.showDetailsDialog(selectedTask);
 	}
 	
-	private Date getNewDate()
-	{
+	// Helper function for stop/start time
+	private Date getNewDate() {
 		return new Date();
 	}
 }
