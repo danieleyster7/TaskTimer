@@ -15,6 +15,7 @@ public class Note
 	private String mobileNoteText;
 	private boolean isTechNote;
 	private boolean isHidden;
+	private String workTime;
 	
 	public StringProperty getNoteNameProperty() {
 		return new SimpleStringProperty(date);
@@ -27,4 +28,9 @@ public class Note
 	public String getMobileNoteText() {
 		return mobileNoteText;
 	}
+	
+	public int getWorkTime() {
+		return Integer.parseInt(workTime);
+	}
 }
+

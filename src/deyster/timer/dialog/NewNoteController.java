@@ -43,8 +43,8 @@ public class NewNoteController extends DialogController
 			newNote = new NewNote();
 			newNote.noteText = noteText.getText();
 			newNote.workTime = TimeUtil.convertToMins(timeField.getText());
-			newNote.jobTicket.id = ticket.getID();
-			newNote.jobTicket.type = ticket.getType();
+			newNote.jobticket.id = ticket.getID();
+			newNote.jobticket.type = ticket.getType();
 			WHD.sendNote(newNote);
 			dialogStage.close();
 		}

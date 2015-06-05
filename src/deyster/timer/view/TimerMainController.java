@@ -12,12 +12,15 @@ import deyster.timer.model.WHDTask;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.util.Duration;
 
 /* Controller class for handling actions on the main window
@@ -32,14 +35,19 @@ public class TimerMainController
 	@FXML
 	private TableColumn<WHDTask, String> taskNameColumn;
 	@FXML
+	private TableColumn<WHDTask, String> myTimeColumn;
+	@FXML
 	private TableColumn<WHDTask, String> taskTimeColumn;
 	@FXML
 	private Label workingTask, timerLabel;
+	@FXML
+	private TextField searchField;
 	private MainApp mainApp;
 	private int startTime, stopTime;
 	private Task currentTask;
 	private DateFormat timerFormat;
 	private Timeline timer;
+	private ObservableList<WHDTask> allTickets, filteredTickets;
 	
 	public TimerMainController() {}
 	
@@ -54,6 +62,8 @@ public class TimerMainController
 				cellData -> cellData.getValue().getTaskNameProperty());
 		taskTimeColumn.setCellValueFactory(
 				cellData -> cellData.getValue().getTimeStringProperty());
+		myTimeColumn.setCellValueFactory(
+				cellData -> cellData.getValue().getMyTimeStringProperty());
 	}
 	
 	/* Sets passed MainApp as its main program
@@ -61,6 +71,7 @@ public class TimerMainController
 	public void setMainApp(MainApp mainApp)
 	{
 		this.mainApp = mainApp;
+		allTickets = mainApp.getTaskData();
 		taskTable.setItems(mainApp.getTaskData());
 	}
 	
@@ -102,6 +113,22 @@ public class TimerMainController
 		mainApp.showDetailsDialog(taskTable.getSelectionModel().getSelectedItem());
 	}
 	
+	/* Filters the table based on what's typed into the search bar as the user types */
+	public void handleSearch() {
+		// Clear Table
+		taskTable.setItems(null);
+		// Create the filtered list of tickets
+		filteredTickets = FXCollections.observableArrayList();
+		// Loop through all tickets looking for matches
+		for(int i = 0; i < allTickets.size(); i++)
+		{
+			// If the ticket's name contains the search criteria, display it
+			if(allTickets.get(i).getTaskName().toLowerCase().contains(searchField.getText())) {
+				filteredTickets.add(allTickets.get(i));
+			}
+		}
+		taskTable.setItems(filteredTickets);
+	}
 	// Helper function for stop/start time
 	private Date getNewDate() {
 		return new Date();

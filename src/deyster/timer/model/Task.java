@@ -15,7 +15,7 @@ public class Task implements Serializable
 	private int taskMinutes;
 	private int taskHours;
 	private int taskSeconds;
-	private transient StringProperty timeString;
+	private transient StringProperty myTimeString;
 	
 	public Task()
 	{
@@ -23,7 +23,7 @@ public class Task implements Serializable
 		taskMinutes = 0;
 		taskHours = 0;
 		taskSeconds = 0;
-		timeString = new SimpleStringProperty("00:00:00");
+		myTimeString = new SimpleStringProperty("00:00:00");
 	}
 	
 	//Pass name of task to be logged
@@ -33,7 +33,7 @@ public class Task implements Serializable
 		taskMinutes = 0;
 		taskHours = 0;
 		taskSeconds = 0;
-		timeString = new SimpleStringProperty("00:00:00");
+		myTimeString = new SimpleStringProperty("00:00:00");
 	}
 	
 	/* Pass time to be added to task in milliseconds.
@@ -56,11 +56,11 @@ public class Task implements Serializable
 			taskHours += (taskMinutes / 60);
 			taskMinutes = taskMinutes - (60 * (taskMinutes / 60));
 		}
-		setTimeStringProperty();
+		setMyTimeStringProperty();
 	}
 	
 	/* Function to set the StringProperty for display on tableview */
-	public void setTimeStringProperty()
+	public void setMyTimeStringProperty()
 	{
 		String taskTime = "";
 		if(taskHours < 10)
@@ -78,10 +78,10 @@ public class Task implements Serializable
 		else
 			taskTime += ":" + Integer.toString(taskSeconds);
 		
-		if(timeString == null) {
-			timeString = new SimpleStringProperty("00:00:00");
+		if(myTimeString == null) {
+			myTimeString = new SimpleStringProperty("00:00:00");
 		}
-		timeString.set(taskTime);
+		myTimeString.set(taskTime);
 	}
 	
 	//Returns taskName wrapped in a StringProperty for JFX display
@@ -90,8 +90,8 @@ public class Task implements Serializable
 	}
 	
 	//Returns total task time in a StringProperty for JFX display
-	public StringProperty getTimeStringProperty() {
-		return timeString;
+	public StringProperty getMyTimeStringProperty() {
+		return myTimeString;
 	}
 	
 	public String getTaskName() {

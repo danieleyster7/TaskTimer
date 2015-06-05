@@ -5,7 +5,7 @@ package deyster.timer.model;
 public class NewNote 
 {
 	public String noteText = "";
-	public JobTicket jobTicket = new JobTicket();
+	public JobTicket jobticket = new JobTicket();
 	public String workTime = "";
 	public boolean isHidden = false;
 	public boolean isSolution = false;

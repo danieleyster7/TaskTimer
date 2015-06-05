@@ -22,6 +22,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.FileEntity;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 
@@ -30,6 +31,7 @@ import com.google.gson.GsonBuilder;
 
 import deyster.timer.model.Credentials;
 import deyster.timer.model.NewNote;
+import deyster.timer.model.Note;
 import deyster.timer.model.NoteResponse;
 import deyster.timer.model.Ticket;
 import deyster.timer.model.TicketDetail;
@@ -173,6 +175,65 @@ public final class WHD
 		}
 	}
 	
+	public static Note[] getTicketNotes(int id) throws IOException
+	{
+		Gson gson = new Gson();
+		CloseableHttpClient httpclient = HttpClients.createDefault();
+		HttpGet httpget;
+		
+		if(credentials.getAuthType() == Credentials.API) {
+			httpget = new HttpGet("https://webhelpdesk.treca.org/helpdesk/WebObjects/Helpdesk.woa/ra/TicketNotes?jobTicketId=" + id + "&apiKey" + credentials.getAPIKey());
+		}
+		else {
+			httpget = new HttpGet("https://webhelpdesk.treca.org/helpdesk/WebObjects/Helpdesk.woa/ra/TicketNotes?jobTicketId=" + id + "&username=" + credentials.getUserName() + "&password=" + credentials.getPassword());
+		}
+		
+		ResponseHandler<Note[]> rh = new ResponseHandler<Note[]>()
+		{
+		    @Override
+		    public Note[] handleResponse(final HttpResponse response) throws IOException 
+		    {
+		        StatusLine statusLine = response.getStatusLine();
+		        HttpEntity entity = response.getEntity();
+		        
+		        if (statusLine.getStatusCode() >= 300) {
+		            throw new HttpResponseException(statusLine.getStatusCode(), statusLine.getReasonPhrase());
+		        }
+		        
+		        if (entity == null) {
+		            throw new ClientProtocolException("Response contains no content");
+		        }
+		        
+		        Gson gson = new GsonBuilder().create();
+		        ContentType contentType = ContentType.getOrDefault(entity);
+		        Charset charset = contentType.getCharset();
+		        Reader reader = new InputStreamReader(entity.getContent(), charset);
+		        return gson.fromJson(reader, Note[].class);
+		    }
+		};
+		
+		return httpclient.execute(httpget, rh);
+	}
+	
+	public static int getTime(Ticket ticket)
+	{
+		int time = 0;
+		try
+		{
+			Note[] notes = getTicketNotes(ticket.getID());
+			for(int i = 0; i < notes.length; i++) {
+				time += notes[i].getWorkTime();
+			}
+		}
+		catch(IOException io) {
+			io.printStackTrace();
+		}
+		finally {
+			return time;
+		}
+	}
+	
+	
 	/* Sends a note for a ticket given a newNote object */
 	public static void sendNote(NewNote newNote)
 	{
@@ -188,10 +249,13 @@ public final class WHD
 			output.close();
 			
 			//Set the http request and json to be posted
-			File file = new File("note.json");
-			FileEntity entity = new FileEntity(file, ContentType.create("application/json", Consts.UTF_8));
+			//File file = new File("note.json");
+			//FileEntity entity = new FileEntity(file, ContentType.create("application/json", Consts.UTF_8));
 			HttpPost httppost = new HttpPost("https://webhelpdesk.treca.org/helpdesk/WebObjects/Helpdesk.woa/ra/TechNotes?username=" + credentials.getUserName() + "&password=" + credentials.getPassword());
-			httppost.setEntity(entity);
+			//httppost.setEntity(entity);
+			httppost.setEntity(new StringEntity(noteJsonString));
+			httppost.setHeader("Accept", "application/json");
+			httppost.setHeader("Content-type", "application/json");
 			
 			ResponseHandler<NoteResponse> rh = new ResponseHandler<NoteResponse>()
 			{

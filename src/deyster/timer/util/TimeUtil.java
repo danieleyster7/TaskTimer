@@ -26,4 +26,12 @@ public final class TimeUtil
 		int mins = (hours * 60) + Integer.parseInt(time.substring(3, 4));
 		return Integer.toString(mins);
 	}
+	
+	public static int getMinsFromTicket(int timeInMins) {
+		return timeInMins % 60;
+	}
+	
+	public static int getHoursFromTicket(int timeInMins) {
+		return timeInMins / 60;
+	}
 }

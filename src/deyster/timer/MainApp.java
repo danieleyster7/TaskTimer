@@ -57,6 +57,7 @@ public class MainApp extends Application
 	public MainApp() {
 		taskData = TicketLoader.load();
 		for(int i = 0; i < taskData.size(); i++) {
+			taskData.get(i).setMyTimeStringProperty();
 			taskData.get(i).setTimeStringProperty();
 		}
 	}
@@ -71,7 +72,7 @@ public class MainApp extends Application
 			{
 				//System.out.println(gson.toJson(tickets[i]));
 				if(isNewTicket(tickets[i].getID())) {
-					taskData.add(new WHDTask(tickets[i].getShortSubject(), tickets[i].getType(), tickets[i].getID()));
+					taskData.add(new WHDTask(tickets[i].getShortSubject(), tickets[i].getType(), tickets[i].getID(), WHD.getTime(tickets[i])));
 				}
 			}
 		}
