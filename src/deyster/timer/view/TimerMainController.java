@@ -93,16 +93,13 @@ public class TimerMainController
 	}
 	
 	//TODO: implement new note to ticket
-	public void handleNewNote()
-	{
-		
+	public void handleNewNote() {
+		mainApp.showNewNoteDialog(taskTable.getSelectionModel().getSelectedItem());
 	}
 	
 	/* Displays the details dialog box for the selected ticket */
-	public void handleDetails()
-	{
-		WHDTask selectedTask = taskTable.getSelectionModel().getSelectedItem();
-		mainApp.showDetailsDialog(selectedTask);
+	public void handleDetails() {
+		mainApp.showDetailsDialog(taskTable.getSelectionModel().getSelectedItem());
 	}
 	
 	// Helper function for stop/start time

@@ -2,6 +2,7 @@ package deyster.timer.dialog;
 
 import deyster.timer.model.NewNote;
 import deyster.timer.model.WHDTask;
+import deyster.timer.util.TimeUtil;
 import deyster.timer.util.WHD;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -23,6 +24,12 @@ public class NewNoteController extends DialogController
 	private NewNote newNote;
 	private WHDTask ticket;
 	
+	public void setTicket(WHDTask ticket)
+	{
+		this.ticket = ticket;
+		timeField.setText(TimeUtil.getHoursAndMins(ticket.getTimeStringProperty().getValue()));
+	}
+	
 	/* Function is fired when OK is clicked
 	 * When the note text field is not empty, a note object is created
 	 * The newNote object is sent to the WHD static class to be sent as an http post request */
@@ -35,6 +42,7 @@ public class NewNoteController extends DialogController
 		{
 			newNote = new NewNote();
 			newNote.noteText = noteText.getText();
+			newNote.workTime = TimeUtil.convertToMins(timeField.getText());
 			newNote.jobTicket.id = ticket.getID();
 			newNote.jobTicket.type = ticket.getType();
 			WHD.sendNote(newNote);

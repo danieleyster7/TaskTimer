@@ -26,6 +26,7 @@ import deyster.timer.view.RootLayoutController;
 import deyster.timer.view.TimerMainController;
 import deyster.timer.dialog.CredentialsController;
 import deyster.timer.dialog.DeleteTaskController;
+import deyster.timer.dialog.NewNoteController;
 import deyster.timer.dialog.NewTaskController;
 import deyster.timer.dialog.ShowDetailsController;
 import deyster.timer.model.Credentials;
@@ -241,6 +242,33 @@ public class MainApp extends Application
         } catch (IOException e) {
             e.printStackTrace();
             return false;
+        }
+	}
+	
+	public void showNewNoteDialog(WHDTask ticket)
+	{
+		try {
+            // Load the fxml file and create a new stage for the popup dialog.
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(MainApp.class.getResource("dialog/NewNote.fxml"));
+            AnchorPane page = (AnchorPane) loader.load();
+
+            // Create the dialog Stage.
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("New Note");
+            dialogStage.initModality(Modality.WINDOW_MODAL);
+            dialogStage.initOwner(primaryStage);
+            Scene scene = new Scene(page);
+            dialogStage.setScene(scene);
+
+            NewNoteController controller = loader.getController();
+            controller.setTicket(ticket);
+            controller.setDialogStage(dialogStage);
+
+            // Show the dialog and wait until the user closes it
+            dialogStage.showAndWait();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 	}
 	

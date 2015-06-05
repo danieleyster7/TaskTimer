@@ -10,6 +10,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 
+import org.apache.http.Consts;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
@@ -29,6 +30,7 @@ import com.google.gson.GsonBuilder;
 
 import deyster.timer.model.Credentials;
 import deyster.timer.model.NewNote;
+import deyster.timer.model.NoteResponse;
 import deyster.timer.model.Ticket;
 import deyster.timer.model.TicketDetail;
 
@@ -51,6 +53,7 @@ public final class WHD
 			httpget = new HttpGet("https://webhelpdesk.treca.org/helpdesk/WebObjects/Helpdesk.woa/ra/Tickets?qualifier=(ccAddressesForTech%20like%20%27*deyster@treca.org*%27)&apiKey=" + credentials.getAPIKey());
 		}
 		else {
+			//httpget = new HttpGet("https://webhelpdesk.treca.org/helpdesk/WebObjects/Helpdesk.woa/ra/Tickets/78884?username=" + credentials.getUserName() + "&password=" + credentials.getPassword());
 			httpget = new HttpGet("https://webhelpdesk.treca.org/helpdesk/WebObjects/Helpdesk.woa/ra/Tickets?qualifier=(ccAddressesForTech%20like%20%27*deyster@treca.org*%27)&username=" + credentials.getUserName() + "&password=" + credentials.getPassword());
 		}
 		
@@ -64,9 +67,7 @@ public final class WHD
 		        HttpEntity entity = response.getEntity();
 		        
 		        if (statusLine.getStatusCode() >= 300) {
-		            throw new HttpResponseException(
-		                    statusLine.getStatusCode(),
-		                    statusLine.getReasonPhrase());
+		            throw new HttpResponseException(statusLine.getStatusCode(), statusLine.getReasonPhrase());
 		        }
 		        
 		        if (entity == null) {
@@ -108,9 +109,7 @@ public final class WHD
 		        HttpEntity entity = response.getEntity();
 		        
 		        if (statusLine.getStatusCode() >= 300) {
-		            throw new HttpResponseException(
-		                    statusLine.getStatusCode(),
-		                    statusLine.getReasonPhrase());
+		            throw new HttpResponseException(statusLine.getStatusCode(), statusLine.getReasonPhrase());
 		        }
 		        
 		        if (entity == null) {
@@ -151,9 +150,7 @@ public final class WHD
 		        HttpEntity entity = response.getEntity();
 		        
 		        if (statusLine.getStatusCode() >= 300) {
-		            throw new HttpResponseException(
-		                    statusLine.getStatusCode(),
-		                    statusLine.getReasonPhrase());
+		            throw new HttpResponseException(statusLine.getStatusCode(), statusLine.getReasonPhrase());
 		        }
 		        
 		        if (entity == null) {
@@ -192,11 +189,37 @@ public final class WHD
 			
 			//Set the http request and json to be posted
 			File file = new File("note.json");
-			FileEntity entity = new FileEntity(file);
+			FileEntity entity = new FileEntity(file, ContentType.create("application/json", Consts.UTF_8));
 			HttpPost httppost = new HttpPost("https://webhelpdesk.treca.org/helpdesk/WebObjects/Helpdesk.woa/ra/TechNotes?username=" + credentials.getUserName() + "&password=" + credentials.getPassword());
 			httppost.setEntity(entity);
 			
-			httpclient.execute(httppost);
+			ResponseHandler<NoteResponse> rh = new ResponseHandler<NoteResponse>()
+			{
+			    @Override
+			    public NoteResponse handleResponse(final HttpResponse response) throws IOException 
+			    {
+			        StatusLine statusLine = response.getStatusLine();
+			        HttpEntity entity = response.getEntity();
+			        
+			        if (statusLine.getStatusCode() >= 300) {
+			        	System.out.println("" + statusLine.getStatusCode() + " " + statusLine.getReasonPhrase());
+			            throw new HttpResponseException(statusLine.getStatusCode(), statusLine.getReasonPhrase());
+			        }
+			        
+			        if (entity == null) {
+			            throw new ClientProtocolException("Response contains no content");
+			        }
+			        
+			        Gson gson = new GsonBuilder().create();
+			        ContentType contentType = ContentType.getOrDefault(entity);
+			        Charset charset = contentType.getCharset();
+			        Reader reader = new InputStreamReader(entity.getContent(), charset);
+			        return gson.fromJson(reader, NoteResponse.class);
+			    }
+			};
+			
+			
+			httpclient.execute(httppost, rh);
 		}
 		catch (IOException io) {
 			io.printStackTrace();

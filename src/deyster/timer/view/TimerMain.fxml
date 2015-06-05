@@ -25,7 +25,7 @@
             <HBox prefHeight="55.0" prefWidth="300.0" spacing="33.3" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                <children>
                   <Button mnemonicParsing="false" onAction="#handleDetails" prefHeight="40.0" prefWidth="150.0" text="Details..." />
-                  <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="150.0" text="Add Note..." />
+                  <Button mnemonicParsing="false" onAction="#handleNewNote" prefHeight="40.0" prefWidth="150.0" text="Add Note..." />
                </children>
                <padding>
                   <Insets bottom="10.0" left="33.3" top="5.0" />
